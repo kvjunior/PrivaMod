@@ -22,7 +22,7 @@ PrivaMod consists of four primary components:
    - **Visual**: Vision Transformer (ViT) with contrastive learning
    - **Transaction**: Longformer with sliding window attention and graph structural modeling
 3. **Bayesian Multimodal Fusion**: Integrates visual and transaction features with uncertainty quantification
-4. **Market Analysis Modules**: Generates insights while maintaining privacy guarantees
+4. **Market Analysis Modules**
 
 ![System Architecture](architecture_diagram.png)
 
@@ -215,7 +215,7 @@ PrivaMod achieves a market efficiency score of 0.874, representing a 13.4% impro
 
 To reproduce the results from our paper:
 
-1. Download the CryptoPunks dataset from [our data repository](https://example.com/cryptopunks)
+1. Download the CryptoPunks dataset from [our data repository]([https://example.com/cryptopunks](https://www.kaggle.com/datasets/tunguz/cryptopunks))
 2. Run the data preprocessing pipeline using `scripts/preprocess_data.py`
 3. Train the model using the configuration in `configs/paper_config.yaml`
 4. Evaluate results using `scripts/evaluate.py`
