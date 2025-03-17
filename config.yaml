@@ -1,0 +1,234 @@
+# PrivaMod Configuration
+# ======================
+# This configuration file contains all settings for the PrivaMod system,
+# including model architecture, training parameters, privacy settings, 
+# and system configuration.
+
+# Model Configuration
+model:
+  # Architecture type: "privaMod" (full system), "visual_encoder", "transaction_encoder", "fusion"
+  architecture: "privaMod"
+  
+  # Visual encoder configuration
+  visual:
+    # Type: "contrastive", "vit", "attribute"
+    type: "vit"
+    
+    # Vision Transformer configuration
+    img_size: 224
+    patch_size: 16
+    in_chans: 3
+    embed_dim: 768
+    depth: 12
+    num_heads: 12
+    mlp_ratio: 4.0
+    dropout: 0.1
+    attn_dropout: 0.1
+    mixer_tokens: true
+    mixer_channels: true
+    
+    # Contrastive learning configuration (if type = "contrastive")
+    contrastive:
+      backbone: "resnet50"
+      projection_dim: 128
+      pretrained: true
+      temperature: 0.07
+      queue_size: 65536
+      momentum: 0.999
+    
+    # Attribute analyzer configuration (if type = "attribute")
+    attribute:
+      num_attributes: 100
+      backbone: "resnet50"
+      embedding_dim: 256
+      num_transformer_layers: 3
+      num_attention_heads: 8
+      pretrained: true
+  
+  # Transaction encoder configuration
+  transaction:
+    # Type: "graph", "longformer"
+    type: "longformer"
+    
+    # Longformer configuration (if type = "longformer")
+    input_dim: 128
+    hidden_dim: 768
+    output_dim: 512
+    max_seq_length: 4096
+    num_hidden_layers: 4
+    num_attention_heads: 8
+    attention_window: 512
+    dropout: 0.1
+    
+    # Graph Neural Network configuration (if type = "graph")
+    graph:
+      feature_dim: 128
+      hidden_dim: 256
+      output_dim: 512
+      num_gnn_layers: 2
+      gnn_type: "gcn"  # "gcn" or "gat"
+      temporal_encoder_type: "gru"  # "gru" or "transformer"
+      num_temporal_layers: 1
+      dropout: 0.1
+  
+  # Fusion module configuration
+  fusion:
+    # Type: "bayesian", "infotheoretic"
+    type: "bayesian"
+    fusion_dim: 512
+    dropout: 0.1
+    
+    # Bayesian fusion configuration (if type = "bayesian")
+    bayesian:
+      num_monte_carlo_samples: 10
+      prior_scale: 1.0
+    
+    # Information-theoretic fusion configuration (if type = "infotheoretic")
+    infotheoretic:
+      temperature: 0.07
+      mi_weight: 1.0
+
+# Data Configuration
+data:
+  # Dataset path
+  data_dir: "dataset"
+  
+  # Image preprocessing
+  image_size: [224, 224]
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+  
+  # Transaction processing
+  max_seq_length: 128
+  num_attributes: 100
+  
+  # Data loading
+  batch_size: 32
+  num_workers: 8
+  val_split: 0.2
+  test_split: 0.1
+  
+  # Optional filtering
+  price_threshold: null
+  include_attributes: true
+  load_graphs: true
+
+# Training Configuration
+training:
+  # Basic parameters
+  epochs: 100
+  batch_size: 32
+  gradient_accumulation_steps: 1
+  
+  # Optimizer settings
+  optimizer:
+    name: "adamw"  # "adam", "sgd", "adamw"
+    learning_rate: 1.0e-4
+    weight_decay: 1.0e-5
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-8
+    momentum: 0.9  # For SGD
+  
+  # Learning rate scheduler
+  scheduler:
+    name: "warmup_cosine"  # "cosine", "step", "plateau", "warmup_cosine"
+    warmup_epochs: 5
+    T_max: 100
+    min_lr: 1.0e-6
+    step_size: 30
+    gamma: 0.1
+    factor: 0.5
+    patience: 10
+  
+  # Loss weights for multi-task learning
+  loss:
+    price_loss: 1.0
+    attribute_loss: 0.5
+    kl_loss: 0.1
+    contrastive_loss: 0.5
+    mi_loss: 0.3
+  
+  # Training techniques
+  use_amp: true  # Mixed precision training
+  use_ema: true  # Exponential moving average of weights
+  ema_decay: 0.999
+  
+  # Checkpointing
+  checkpoint_interval: 10
+  keep_n_checkpoints: 3
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 0.001
+
+# Privacy Configuration
+privacy:
+  # Privacy budget
+  epsilon: 0.1
+  delta: 1.0e-5
+  
+  # DP-SGD parameters
+  noise_multiplier: 1.0  # Automatically calculated if data_size is provided
+  max_grad_norm: 1.0
+  
+  # Advanced settings
+  secure_aggregation: true
+  adaptive_clipping: true
+  clipping_quantile: 0.9
+  
+  # Privacy monitoring
+  track_privacy_budget: true
+  privacy_audit_interval: 10
+
+# Analysis Configuration
+analysis:
+  # Market analysis
+  market_analysis:
+    enabled: true
+    metrics: ["price_prediction", "market_efficiency", "price_volatility"]
+    
+  # Visual analysis
+  visual_analysis:
+    enabled: true
+    cluster_analysis: true
+    num_clusters: 10
+    
+  # Network analysis
+  network_analysis:
+    enabled: true
+    centrality_metrics: true
+    community_detection: true
+    
+  # Cross-modal analysis
+  cross_modal_analysis:
+    enabled: true
+    correlation_analysis: true
+    fusion_effectiveness: true
+  
+  # Reporting
+  generate_report: true
+  generate_dashboard: true
+
+# System Configuration
+system:
+  # Hardware settings
+  num_gpus: 4
+  use_ddp: true  # Distributed Data Parallel
+  num_workers: 16
+  
+  # Memory optimization
+  optimize_memory: true
+  gradient_checkpointing: true
+  
+  # Output settings
+  output_dir: "results"
+  log_dir: "logs"
+  
+  # Random seed for reproducibility
+  seed: 42
+  
+  # Debug mode
+  debug: false
