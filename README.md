@@ -24,8 +24,6 @@ PrivaMod consists of four primary components:
 3. **Bayesian Multimodal Fusion**: Integrates visual and transaction features with uncertainty quantification
 4. **Market Analysis Modules**
 
-![System Architecture](architecture_diagram.png)
-
 ## Installation
 
 ### Requirements
